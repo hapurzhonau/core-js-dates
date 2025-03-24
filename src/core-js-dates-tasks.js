@@ -51,17 +51,17 @@ function getTime(date) {
  * '2024-01-30T00:00:00.000Z' => 'Tuesday'
  */
 function getDayName(date) {
-  const day = new Date(date).getDay();
-  const weekDay = {
-    0: 'Sunday',
-    1: 'Monday',
-    2: 'Tuesday',
-    3: 'Wednesday',
-    4: 'Thursday',
-    5: 'Friday',
-    6: 'Saturday',
-  };
-  return weekDay[day];
+  const utcDay = new Date(date).getUTCDay();
+  const weekDay = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+  return weekDay[utcDay];
 }
 
 /**
@@ -76,11 +76,16 @@ function getDayName(date) {
  * Date('2024-02-16T00:00:00Z') => Date('2024-02-23T00:00:00Z')
  */
 function getNextFriday(date) {
-  const currenWeekDay = date.getDay();
-  let daysToFriday = (5 - currenWeekDay + 7) % 7;
+  const currentWeekDay = date.getUTCDay();
+  let daysToFriday = (5 - currentWeekDay + 7) % 7;
   if (daysToFriday === 0) daysToFriday = 7;
-  const nextFriday = new Date(date);
-  nextFriday.setDate(date.getDate() + daysToFriday);
+  const nextFriday = new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate() + daysToFriday
+    )
+  );
   return nextFriday;
 }
 
