@@ -273,15 +273,19 @@ function getQuarter(date) {
  */
 function getWorkSchedule(period, countWorkDays, countOffDays) {
   const result = [];
-  const end = new Date(period.end.split('-').reverse().join('-'));
-  const start = new Date(period.start.split('-').reverse().join('-'));
-  const workDay = new Date(start);
+  const [startDay, startMonth, startYear] = period.start.split('-').map(Number);
+  const [endDay, endMonth, endYear] = period.end.split('-').map(Number);
+  const end = new Date(Date.UTC(endYear, endMonth - 1, endDay));
+  const workDay = new Date(Date.UTC(startYear, startMonth - 1, startDay));
   while (workDay <= end) {
     for (let i = 0; i < countWorkDays && workDay <= end; i += 1) {
-      result.push(workDay.toLocaleDateString('ru-RU').split('.').join('-'));
-      workDay.setDate(workDay.getDate() + 1);
+      const day = String(workDay.getUTCDate()).padStart(2, '0');
+      const month = String(workDay.getUTCMonth() + 1).padStart(2, '0');
+      const year = workDay.getUTCFullYear();
+      result.push(`${day}-${month}-${year}`);
+      workDay.setUTCDate(workDay.getUTCDate() + 1);
     }
-    workDay.setDate(workDay.getDate() + countOffDays);
+    workDay.setUTCDate(workDay.getUTCDate() + countOffDays);
   }
   return result;
 }
